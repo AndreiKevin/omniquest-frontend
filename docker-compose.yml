@@ -14,8 +14,8 @@ services:
     build:
       context: .
       dockerfile: backend/Dockerfile
-    environment:
-      DATABASE_URL: postgresql+psycopg://postgres:postgres@db:5432/omniquest
+    env_file:
+      - backend/.env.docker
     depends_on:
       - db
 
@@ -23,8 +23,8 @@ services:
     build:
       context: .
       dockerfile: backend/Dockerfile
-    environment:
-      DATABASE_URL: postgresql+psycopg://postgres:postgres@db:5432/omniquest
+    env_file:
+      - backend/.env.docker
     depends_on:
       - db
 
@@ -42,8 +42,8 @@ services:
     build:
       context: .
       dockerfile: frontend/Dockerfile
-    environment:
-      - VITE_API_URL=http://backend
+    # env_file:
+    #   - frontend/.env.docker
     ports:
       - "5173:80"
     depends_on:

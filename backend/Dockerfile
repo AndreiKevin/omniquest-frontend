@@ -11,6 +11,8 @@ COPY backend/requirements.txt /app/requirements.txt
 RUN pip install --no-cache-dir -r /app/requirements.txt
 
 COPY backend /app
+# Copy backend .env.docker into image as .env (prod defaults; can be overridden at runtime)
+COPY backend/.env.docker /app/.env
 COPY data.json /app/data.json
 
 ENV PORT=8000

@@ -3,3 +3,5 @@ node_modules
 dist
 backend/.venv/*
 backend/app/__pycache__/*
+/backend/omni
+backend/.env.docker
