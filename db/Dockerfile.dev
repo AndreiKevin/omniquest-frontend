@@ -1,0 +1,12 @@
+FROM pgvector/pgvector:pg16
+
+# Default dev credentials and database
+ENV POSTGRES_USER=postgres \
+    POSTGRES_PASSWORD=postgres \
+    POSTGRES_DB=dev
+
+EXPOSE 5432
+
+# The base image provides the default entrypoint to start Postgres
+
+

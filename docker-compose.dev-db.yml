@@ -1,0 +1,15 @@
+services:
+  devdb:
+    build:
+      context: .
+      dockerfile: db/Dockerfile.dev
+    container_name: omniquest-devdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - dev_db_data:/var/lib/postgresql/data
+
+volumes:
+  dev_db_data:
+
+

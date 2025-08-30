@@ -8,14 +8,14 @@
 
 ## Frontend (Dev)
 1) Open a terminal:
-   - cd "E:\Computer Science\omniquest-frontend\frontend"
+   - cd to the /frontend directory
    - npm install
    - npm run dev
 2) Open the printed URL (e.g., http://localhost:5173). If 5173 is busy, Vite will choose 5174/5175.
 
 ## Backend (Dev, file-backed)
 Windows PowerShell:
-- cd "E:\Computer Science\omniquest-frontend\backend"
+- cd to the /backend directory
 - py -3 -m venv .venv
 - .\.venv\Scripts\Activate.ps1
 - pip install -r requirements.txt
@@ -29,13 +29,31 @@ macOS/Linux:
 
 API runs at http://127.0.0.1:8000
 
-## Backend (DB mode with Postgres + pgvector)
-1) Start Postgres:
-   - From repo root: docker compose up -d db
-2) In a new shell for backend:
-   - Windows PowerShell: $env:DATABASE_URL = "postgresql+psycopg://postgres:postgres@127.0.0.1:5432/omniquest"
-   - macOS/Linux: export DATABASE_URL="postgresql+psycopg://postgres:postgres@127.0.0.1:5432/omniquest"
-3) Initialize schema and load data:
+## Backend Dev Setup
+1) Configure .env
+   - Development environment variables.
+     - DATABASE_URL: postgresql+psycopg://postgres:postgres@127.0.0.1:5432/dev
+       - Assuming you run with the Docker file db
+2) Start Dev Postgres:
+   ```bash
+   docker-compose -f docker-compose.dev-db.yml up --build
+   ```
+3) Initialize schema and load data **(once only)**:
+   - python -m app.db_init
+   - python -m app.ingest
+4) Run API:
+   - uvicorn app.main:app --reload
+
+
+## Backend Prod Setup
+1) Configure .env.docker
+   - Production environment variables.
+     - DATABASE_URL
+2) Start Dev Postgres:
+   ```bash
+   docker-compose -f docker-compose.dev-db.yml up --build
+   ```
+3) Initialize schema and load data **(once only)**:
    - python -m app.db_init
    - python -m app.ingest
 4) Run API:
