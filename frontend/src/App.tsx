@@ -120,7 +120,7 @@ export default function App() {
               </div>
               <div className="flex flex-wrap items-center gap-2">
                 <span className="text-xs text-zinc-500 mr-1">Active:</span>
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2">
                   {selectedCategories.length === 0 ? (
                     <button onClick={() => setSelectedCategories([])} className="group cursor-pointer">
                       <Badge variant="secondary" className="gap-1">
@@ -172,11 +172,11 @@ export default function App() {
               <ScrollArea className="h-[calc(100vh-16rem)] p-4">
                 <div className="space-y-3">
                   {messages.map((m) => (
-                    <div key={m.id} className={m.role === 'user' ? 'ml-auto max-w-[80%]' : 'mr-auto max-w-[80%]'}>
+                    <div key={m.id} dir={m.role === 'user' ? 'rtl' : 'ltr'} className={m.role === 'user' ? 'ml-auto max-w-[80%]' : 'mr-auto max-w-[80%]'}>
                       <div className={
                         m.role === 'user'
-                          ? 'rounded-2xl bg-blue-600 text-white px-3 py-2'
-                          : 'rounded-2xl bg-zinc-100 text-zinc-900 px-3 py-2'
+                          ? 'inline-block rounded-2xl bg-blue-600 text-white px-3 py-2'
+                          : 'inline-block rounded-2xl bg-zinc-100 text-zinc-900 px-3 py-2'
                       }>
                         {m.text}
                       </div>
