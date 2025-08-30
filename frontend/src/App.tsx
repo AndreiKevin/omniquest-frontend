@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input'
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
-import { SlidersHorizontal, Filter, X, ArrowUpAZ, ArrowDownAZ } from 'lucide-react'
+import { SlidersHorizontal, Filter, X, ArrowUpAZ, ArrowDownAZ, ShoppingBasketIcon, CircleDollarSignIcon } from 'lucide-react'
 import { fetchCategories, sendChat } from './lib/api'
 import type { ChatMessage, Product } from './types'
 
@@ -132,9 +132,9 @@ export default function App() {
                   ) : (
                     selectedCategories.map((c) => (
                       <button key={c} onClick={() => setSelectedCategories((prev) => prev.filter((x) => x !== c))} className="group cursor-pointer">
-                        <Badge variant="destructive" className="gap-1 hover:opacity-90">
-                          <Filter className="h-3.5 w-3.5 group-hover:hidden" />
-                          <X className="h-3.5 w-3.5 hidden group-hover:inline text-white" />
+                        <Badge variant="secondary" className="gap-1 hover:opacity-90">
+                          <ShoppingBasketIcon className="h-3.5 w-3.5 group-hover:hidden" />
+                          <X className="h-3.5 w-3.5 hidden group-hover:inline" />
                           {c}
                         </Badge>
                       </button>
@@ -143,7 +143,7 @@ export default function App() {
                   {sort && (
                     <button onClick={() => setSort(undefined)} className="group cursor-pointer">
                       <Badge variant="secondary" className="gap-1 hover:opacity-90">
-                        <Filter className="h-3.5 w-3.5 group-hover:hidden" />
+                        <CircleDollarSignIcon className="h-3.5 w-3.5 group-hover:hidden" />
                         <X className="h-3.5 w-3.5 hidden group-hover:inline" />
                         Sort: {sort === 'price_asc' ? 'Price ↑' : 'Price ↓'}
                       </Badge>
