@@ -190,18 +190,15 @@ async def chatbot(body: ChatRequest, db: Session = Depends(get_db)):
         for p in ALL_PRODUCTS[: body.top_k]:
             products.append(Product(**p))
 
-    # Build concise prompt with past conversation context (approx <= 200 words)
-    # For simplicity, we include only the current query here; extend as needed with history.
-    import json as _json
-    products_json = _json.dumps([p.model_dump() for p in products])
-    prompt = (
+    products_json = json.dumps([p.model_dump() for p in products])
+    system_message = (
         "You are a shopping assistant. Given the user's query and retrieved products, "
         "explain briefly (<= 150 words) why these products are good recommendations. "
-        "Focus on matching category, price suitability, and brand. Respond in markdown. \n\n"
-        f"User query: {body.query}\n\n"
+        "Focus on matching category, price suitability, and brand. Respond in markdown. "
+        "Respond directly as if you are speaking to the user directly."
         f"Retrieved products (JSON): {products_json}"
     )
-    message = await async_generate_reasoning(prompt)
+    message = await async_generate_reasoning(body.query, system_message)
     return ChatResponse(message=message, products=products)
 
 

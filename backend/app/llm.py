@@ -30,7 +30,7 @@ except Exception:  # pragma: no cover
     SystemMessage = UserMessage = AzureKeyCredential = None  # type: ignore
 
 
-async def async_generate_reasoning(prompt: str, *, model: Optional[str] = None) -> str:
+async def async_generate_reasoning(prompt: str, system_message: str, model: Optional[str] = None) -> str:
     """Generate reasoning text using OpenAI (preferred) or Azure AI Inference based on available creds."""
     # Prefer OpenAI if available
     if OPENAI_API_KEY and AsyncOpenAI is not None:
@@ -39,7 +39,7 @@ async def async_generate_reasoning(prompt: str, *, model: Optional[str] = None) 
         resp = await client.chat.completions.create(
             model=used_model,
             messages=[
-                {"role": "system", "content": "You are a helpful shopping assistant."},
+                {"role": "system", "content": system_message},
                 {"role": "user", "content": prompt},
             ],
             temperature=0.2,
@@ -60,7 +60,7 @@ async def async_generate_reasoning(prompt: str, *, model: Optional[str] = None) 
         def _call_sync() -> str:
             resp = client.complete(
                 messages=[
-                    SystemMessage("You are a helpful shopping assistant."),
+                    SystemMessage(system_message),
                     UserMessage(prompt),
                 ],
                 temperature=0.2,
