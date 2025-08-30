@@ -3,39 +3,40 @@
 Color scheme: blue, black, white. Frontend: TypeScript/React, React Query, Tailwind, shadcn/ui. Backend: FastAPI, Postgres (pgvector), NGINX, Docker, Locust.
 
 ### Milestone 1 — Bootstrap & Scaffolding
-- [ ] Create `frontend/` with Vite (React + TS)
-- [ ] Add Tailwind CSS, configure theme (blue/black/white)
-- [ ] Initialize shadcn/ui and base components
-- [ ] Install React Query and setup `QueryClientProvider`
-- [ ] Create `backend/` FastAPI project skeleton
-- [ ] Wire dev server scripts for both apps
+- [x] Create `frontend/` with Vite (React + TS)
+- [x] Add Tailwind CSS, configure theme (blue/black/white)
+- [x] Initialize shadcn/ui and base components
+- [x] Install React Query and setup `QueryClientProvider`
+- [x] Create `backend/` FastAPI project skeleton
+- [x] Wire dev server scripts for both apps
 
 ### Milestone 2 — Backend Products API (Phase 1: file-backed)
-- [ ] Define product schema (pydantic model)
-- [ ] Implement `/products` endpoint with pagination, category filter, price sort
-- [ ] Load data from `data.json` (temporary until DB)
-- [ ] Validate query params and error handling
-- [ ] Basic CORS setup for frontend
+- [x] Define product schema (pydantic model)
+- [x] Implement `/products` endpoint with pagination, category filter, price sort
+- [x] Add `/categories` endpoint
+- [x] Load data from `data.json` (temporary until DB)
+- [ ] Validate query params and error handling (improve messages/ranges)
+- [x] Basic CORS setup for frontend
 
 ### Milestone 3 — Frontend Products Page
-- [ ] Products grid: name, brand, category, price, image
-- [ ] Opacity-in transition for cards
+- [x] Products grid: name, brand, category, price, image
+- [x] Opacity-in transition for cards
 - [ ] Category filter dropdown (shadcn Select)
 - [ ] Sort-by-price control (button/toggle)
 - [ ] Active filter/sort badges under controls
 - [ ] Badge delete (hover shows x, quick opacity transition)
-- [ ] Responsive grid; handle different image sizes (height 100, variable width)
+- [x] Responsive grid; handle different image sizes (height 100, variable width)
 
 ### Milestone 4 — Data Fetching & Pagination
-- [ ] React Query hooks for products
-- [ ] Paginated requests (never fetch full list)
-- [ ] Infinite scroll on grid with intersection observer
+- [x] React Query hooks for products
+- [x] Paginated requests (never fetch full list)
+- [x] Infinite scroll on grid with intersection observer
 - [ ] Cache pages; reset cache on filter/sort changes
 
 ### Milestone 5 — Chatbot UI (Frontend)
-- [ ] Always-visible docked chat panel on right
+- [x] Always-visible docked chat panel on right (UI skeleton)
 - [ ] Message list (user/assistant bubbles like Messenger)
-- [ ] Input + send button; disabled while sending
+- [x] Input + send button; disabled while sending
 - [ ] Wire to backend `/chatbot` endpoint
 - [ ] Render recommended products as cards beneath assistant replies
 
