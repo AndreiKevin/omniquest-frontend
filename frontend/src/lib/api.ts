@@ -6,12 +6,14 @@ export async function fetchProducts(params: {
   page: number
   pageSize: number
   category?: string
+  categories?: string
   sort?: 'price_asc' | 'price_desc'
 }): Promise<ProductsResponse> {
   const q = new URLSearchParams()
   q.set('page', String(params.page))
   q.set('page_size', String(params.pageSize))
   if (params.category) q.set('category', params.category)
+  if (params.categories) q.set('categories', params.categories)
   if (params.sort) q.set('sort', params.sort)
   const res = await fetch(`${API_URL}/products?${q.toString()}`)
   if (!res.ok) throw new Error('Failed to fetch products')

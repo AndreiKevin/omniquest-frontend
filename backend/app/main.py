@@ -12,7 +12,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import select, func
 from .deps import get_db
 from .models import ProductORM
-from .chatbot import search_similar_products
+from .chatbot import search_similar_products, get_text_model
 
 
 class Product(BaseModel):
@@ -97,16 +97,22 @@ def list_categories(db: Session = Depends(get_db)) -> list[str]:
 def list_products(
     page: int = Query(1, ge=1),
     page_size: int = Query(24, ge=1, le=100),
-    category: Optional[str] = Query(None),
+    category: Optional[str] = Query(None, description="Single category (deprecated)"),
+    categories: Optional[str] = Query(None, description="Comma-separated categories"),
     sort: Optional[Literal["price_asc", "price_desc"]] = Query(None),
     db: Session = Depends(get_db),
 ):
     if os.getenv("DATABASE_URL"):
         query = select(ProductORM)
         count_query = select(func.count()).select_from(ProductORM)
-        if category:
-            query = query.where(ProductORM.category == category)
-            count_query = select(func.count()).select_from(ProductORM).where(ProductORM.category == category)
+        cats = None
+        if categories:
+            cats = [c for c in categories.split(',') if c]
+        elif category:
+            cats = [category]
+        if cats:
+            query = query.where(ProductORM.category.in_(cats))
+            count_query = select(func.count()).select_from(ProductORM).where(ProductORM.category.in_(cats))
         if sort == "price_asc":
             query = query.order_by(ProductORM.price.asc())
         elif sort == "price_desc":
@@ -130,8 +136,13 @@ def list_products(
 
     items = ALL_PRODUCTS
 
-    if category:
-        items = [p for p in items if p.get("category") == category]
+    cats = None
+    if categories:
+        cats = [c for c in categories.split(',') if c]
+    elif category:
+        cats = [category]
+    if cats:
+        items = [p for p in items if p.get("category") in cats]
 
     if sort == "price_asc":
         items = sorted(items, key=lambda p: float(p.get("price", 0)))
@@ -155,15 +166,9 @@ def list_products(
 
 @app.post("/chatbot", response_model=ChatResponse)
 def chatbot(body: ChatRequest, db: Session = Depends(get_db)):
-    # Placeholder embedding: use naive bag-of-words hash as float vector for demo
-    # In production, replace with OpenAI or sentence-transformers and store embeddings during ingest
-    def cheap_embed(text: str, dims: int = 1536) -> list[float]:
-        v = [0.0] * dims
-        for i, ch in enumerate(text.encode("utf-8")):
-            v[i % dims] += (ch % 7) / 255.0
-        return v
-
-    emb = cheap_embed(body.query)
+    # FastEmbed query embedding (384 dims by default)
+    emb_arr = list(get_text_model().embed([body.query]))[0]
+    emb = emb_arr.tolist()
     products = []
     if os.getenv("DATABASE_URL"):
         rows = search_similar_products(db, emb, top_k=body.top_k)

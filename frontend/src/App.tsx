@@ -6,13 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
+import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
 import { SlidersHorizontal, Filter, X, ArrowUpAZ, ArrowDownAZ } from 'lucide-react'
@@ -20,10 +14,12 @@ import { fetchCategories, sendChat } from './lib/api'
 import type { ChatMessage, Product } from './types'
 
 export default function App() {
-  const pageSize = 24
-  const [category, setCategory] = useState<string | undefined>(undefined)
+  const pageSize = 15
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([])
   const [sort, setSort] = useState<'price_asc' | 'price_desc' | undefined>(undefined)
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useProducts({ pageSize, category, sort })
+
+  const categoriesParam = selectedCategories.length ? selectedCategories.join(',') : undefined
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useProducts({ pageSize, categories: categoriesParam, sort })
   const items = useMemo(() => data?.pages.flatMap((p) => p.items) ?? [], [data])
   const sentinelRef = useRef<HTMLDivElement | null>(null)
   const { data: categories } = useQuery({ queryKey: ['categories'], queryFn: fetchCategories })
@@ -84,26 +80,40 @@ export default function App() {
               <div className="flex flex-wrap gap-3 items-end">
                 <div className="space-y-1">
                   <label className="block text-xs text-zinc-600">Category</label>
-                  <Select value={category ?? 'all'} onValueChange={(v) => setCategory(v === 'all' ? undefined : v)}>
-                    <SelectTrigger className="w-56">
-                      <SelectValue placeholder="Select category" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All</SelectItem>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="outline" className="w-56 justify-between">
+                        {selectedCategories.length ? `${selectedCategories.length} selected` : 'Select categories'}
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-56">
+                      <DropdownMenuLabel>Categories</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuCheckboxItem
+                        checked={selectedCategories.length === 0}
+                        onCheckedChange={(ck) => { if (ck) setSelectedCategories([]) }}
+                      >All</DropdownMenuCheckboxItem>
                       {categories?.map((c) => (
-                        <SelectItem key={c} value={c}>{c}</SelectItem>
+                        <DropdownMenuCheckboxItem
+                          key={c}
+                          checked={selectedCategories.includes(c)}
+                          onCheckedChange={(ck) => setSelectedCategories((prev) => ck ? [...prev, c] : prev.filter((x) => x !== c))}
+                        >{c}</DropdownMenuCheckboxItem>
                       ))}
-                    </SelectContent>
-                  </Select>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </div>
                 <div className="space-y-1">
                   <label className="block text-xs text-zinc-600">Sort</label>
                   <div className="flex gap-2">
-                    <Button variant={sort === 'price_asc' ? 'default' : 'outline'} size="sm" className="h-10" onClick={() => setSort('price_asc')}>
-                      <ArrowUpAZ className="h-4 w-4 mr-2" /> Price: Low → High
-                    </Button>
-                    <Button variant={sort === 'price_desc' ? 'default' : 'outline'} size="sm" className="h-10" onClick={() => setSort('price_desc')}>
-                      <ArrowDownAZ className="h-4 w-4 mr-2" /> Price: High → Low
+                    <Button
+                      variant={sort ? 'default' : 'outline'}
+                      size="sm"
+                      className="h-10"
+                      onClick={() => setSort(sort === undefined ? 'price_asc' : sort === 'price_asc' ? 'price_desc' : undefined)}
+                    >
+                      {sort === 'price_desc' ? <ArrowDownAZ className="h-4 w-4 mr-2" /> : <ArrowUpAZ className="h-4 w-4 mr-2" />}
+                      {sort === undefined ? 'Price: Off' : sort === 'price_asc' ? 'Price: Low → High' : 'Price: High → Low'}
                     </Button>
                   </div>
                 </div>
@@ -111,16 +121,28 @@ export default function App() {
               <div className="flex flex-wrap items-center gap-2">
                 <span className="text-xs text-zinc-500 mr-1">Active:</span>
                 <div className="flex gap-2">
-                  <button onClick={() => setCategory(undefined)} className="group">
-                    <Badge variant="secondary" className="gap-1">
-                      <Filter className="h-3.5 w-3.5 group-hover:hidden" />
-                      <X className="h-3.5 w-3.5 hidden group-hover:inline" />
-                      Category: {category ?? 'All'}
-                    </Badge>
-                  </button>
-                  {sort && (
-                    <button onClick={() => setSort(undefined)} className="group">
+                  {selectedCategories.length === 0 ? (
+                    <button onClick={() => setSelectedCategories([])} className="group cursor-pointer">
                       <Badge variant="secondary" className="gap-1">
+                        <Filter className="h-3.5 w-3.5 group-hover:hidden" />
+                        <X className="h-3.5 w-3.5 hidden group-hover:inline" />
+                        Category: All
+                      </Badge>
+                    </button>
+                  ) : (
+                    selectedCategories.map((c) => (
+                      <button key={c} onClick={() => setSelectedCategories((prev) => prev.filter((x) => x !== c))} className="group cursor-pointer">
+                        <Badge variant="destructive" className="gap-1 hover:opacity-90">
+                          <Filter className="h-3.5 w-3.5 group-hover:hidden" />
+                          <X className="h-3.5 w-3.5 hidden group-hover:inline text-white" />
+                          {c}
+                        </Badge>
+                      </button>
+                    ))
+                  )}
+                  {sort && (
+                    <button onClick={() => setSort(undefined)} className="group cursor-pointer">
+                      <Badge variant="secondary" className="gap-1 hover:opacity-90">
                         <Filter className="h-3.5 w-3.5 group-hover:hidden" />
                         <X className="h-3.5 w-3.5 hidden group-hover:inline" />
                         Sort: {sort === 'price_asc' ? 'Price ↑' : 'Price ↓'}

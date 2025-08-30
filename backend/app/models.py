@@ -18,7 +18,7 @@ class ProductORM(Base):
     price = Column(Float, nullable=False, index=True)
     quantity = Column(Integer, nullable=False, default=0)
     product_image = Column(String, nullable=False)
-    embedding = Column(Vector(1536), nullable=True)  # OpenAI text-embedding-3-large dims
+    embedding = Column(Vector(384), nullable=True)  # FastEmbed default model dims
 
     __table_args__ = (
         Index("ix_products_category_price", "category", "price"),

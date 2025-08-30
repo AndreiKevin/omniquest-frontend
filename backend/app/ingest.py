@@ -10,6 +10,7 @@ from sqlalchemy import select
 from .deps import SessionLocal
 from .models import ProductORM
 from .db_init import init_db
+from fastembed import TextEmbedding
 
 
 def load_repo_data() -> list[dict[str, Any]]:
@@ -20,8 +21,15 @@ def load_repo_data() -> list[dict[str, Any]]:
 
 
 def upsert_products(db: Session, data: list[dict[str, Any]]) -> None:
+    # Prepare embeddings for all products using FastEmbed (384 dims by default)
+    model = TextEmbedding()
+    texts: list[str] = [
+        f"{p.get('product_name','')} | {p.get('brand','')} | {p.get('category','')}"
+        for p in data
+    ]
+    embeddings = list(model.embed(texts))  # list[np.array]
     existing_ids = {row[0] for row in db.execute(select(ProductORM.id)).all()}
-    for p in data:
+    for idx, p in enumerate(data):
         pid = p.get("product_id")
         if not pid or pid in existing_ids:
             continue
@@ -34,7 +42,7 @@ def upsert_products(db: Session, data: list[dict[str, Any]]) -> None:
                 price=float(p.get("price", 0)),
                 quantity=int(p.get("quantity", 0)),
                 product_image=p.get("product_image"),
-                embedding=None,
+                embedding=embeddings[idx].tolist() if idx < len(embeddings) else None,
             )
         )
     db.commit()
