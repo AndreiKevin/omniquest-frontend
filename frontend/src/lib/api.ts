@@ -1,4 +1,4 @@
-import type { ProductsResponse } from '../types'
+import type { ProductsResponse, ChatRequest, ChatResponse } from '../types'
 
 const API_URL = 'http://127.0.0.1:8000'
 
@@ -21,6 +21,16 @@ export async function fetchProducts(params: {
 export async function fetchCategories(): Promise<string[]> {
   const res = await fetch(`${API_URL}/categories`)
   if (!res.ok) throw new Error('Failed to fetch categories')
+  return res.json()
+}
+
+export async function sendChat(body: ChatRequest): Promise<ChatResponse> {
+  const res = await fetch(`${API_URL}/chatbot`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  })
+  if (!res.ok) throw new Error('Failed to chat')
   return res.json()
 }
 

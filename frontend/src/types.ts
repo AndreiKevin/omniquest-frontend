@@ -16,4 +16,21 @@ export type ProductsResponse = {
   has_next: boolean
 }
 
+export type ChatRequest = {
+  query: string
+  top_k?: number
+}
+
+export type ChatResponse = {
+  message: string
+  products: Product[]
+}
+
+export type ChatMessage = {
+  id: string
+  role: 'user' | 'assistant'
+  text: string
+  products?: Product[]
+}
+
 
