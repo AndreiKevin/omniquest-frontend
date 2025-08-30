@@ -7,12 +7,10 @@ from .models import Base
 
 
 def init_db() -> None:
-    with engine.connect() as conn:
-        # Ensure pgvector extension
-        try:
-            conn.execute(text("CREATE EXTENSION IF NOT EXISTS vector"))
-        except Exception:
-            pass
+    # Ensure pgvector extension in a committed transaction
+    with engine.begin() as conn:
+        conn.execute(text("CREATE EXTENSION IF NOT EXISTS vector"))
+    # Create tables after extension is available
     Base.metadata.create_all(bind=engine)
 
 
