@@ -38,6 +38,17 @@ services:
       - backend1
       - backend2
 
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    environment:
+      - VITE_API_URL=http://backend
+    ports:
+      - "5173:80"
+    depends_on:
+      - nginx
+
 volumes:
   db_data:
 
