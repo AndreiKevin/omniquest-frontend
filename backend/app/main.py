@@ -13,6 +13,7 @@ from sqlalchemy import select, func
 from .deps import get_db
 from .models import ProductORM
 from .chatbot import search_similar_products, get_text_model
+from .llm import async_generate_reasoning
 
 
 class Product(BaseModel):
@@ -165,7 +166,7 @@ def list_products(
 
 
 @app.post("/chatbot", response_model=ChatResponse)
-def chatbot(body: ChatRequest, db: Session = Depends(get_db)):
+async def chatbot(body: ChatRequest, db: Session = Depends(get_db)):
     # FastEmbed query embedding (384 dims by default)
     emb_arr = list(get_text_model().embed([body.query]))[0]
     emb = emb_arr.tolist()
@@ -189,7 +190,18 @@ def chatbot(body: ChatRequest, db: Session = Depends(get_db)):
         for p in ALL_PRODUCTS[: body.top_k]:
             products.append(Product(**p))
 
-    message = "Here are some products you might like based on your query."
+    # Build concise prompt with past conversation context (approx <= 200 words)
+    # For simplicity, we include only the current query here; extend as needed with history.
+    import json as _json
+    products_json = _json.dumps([p.model_dump() for p in products])
+    prompt = (
+        "You are a shopping assistant. Given the user's query and retrieved products, "
+        "explain briefly (<= 150 words) why these products are good recommendations. "
+        "Focus on matching category, price suitability, and brand.\n\n"
+        f"User query: {body.query}\n\n"
+        f"Retrieved products (JSON): {products_json}"
+    )
+    message = await async_generate_reasoning(prompt)
     return ChatResponse(message=message, products=products)
 
 

@@ -33,7 +33,13 @@ API runs at http://127.0.0.1:8000
 1) Configure .env
    - Development environment variables.
      - DATABASE_URL: postgresql+psycopg://postgres:postgres@127.0.0.1:5432/dev
-       - Assuming you run with the Docker file db
+       - Assuming you run with the dev DB docker compose file
+     - Optional LLM config (OpenAI preferred; if missing, Azure AI Inference is used):
+       - OPENAI_API_KEY
+       - OPENAI_MODEL (default: gpt-4o-mini)
+       - GITHUB_TOKEN (GitHub Models/Azure AI Inference)
+       - AZURE_INFERENCE_ENDPOINT (default: https://models.github.ai/inference)
+       - AZURE_INFERENCE_MODEL (default: mistral-ai/mistral-small-2503)
 2) Start Dev Postgres:
    ```bash
    docker-compose -f docker-compose.dev-db.yml up --build
@@ -49,6 +55,12 @@ API runs at http://127.0.0.1:8000
 1) Configure .env.docker
    - Production environment variables.
      - DATABASE_URL
+     - Optional LLM config (OpenAI preferred; if missing, Azure AI Inference is used):
+       - OPENAI_API_KEY
+       - OPENAI_MODEL (default: gpt-4o-mini)
+       - GITHUB_TOKEN (GitHub Models/Azure AI Inference)
+       - AZURE_INFERENCE_ENDPOINT (default: https://models.github.ai/inference)
+       - AZURE_INFERENCE_MODEL (default: mistral-ai/mistral-small-2503)
 2) Start Dev Postgres:
    ```bash
    docker-compose -f docker-compose.dev-db.yml up --build
@@ -68,8 +80,20 @@ Ports:
 - NGINX reverse proxy (to backends): http://localhost:8080
 
 ## Environment Variables
-- DATABASE_URL: Postgres connection string (enables DB-backed API)
-- VITE_API_URL (optional): Override frontend API URL at build/runtime
+Backend:
+ - DATABASE_URL: Postgres connection string
+ - OPENAI_API_KEY: If present, backend uses OpenAI for reasoning (preferred)
+ - OPENAI_MODEL: Optional model name (default gpt-4o-mini)
+ - GITHUB_TOKEN: If OPENAI_API_KEY is absent and this is present, backend uses Azure AI Inference (GitHub Models)
+ - AZURE_INFERENCE_ENDPOINT: Optional, default https://models.github.ai/inference
+ - AZURE_INFERENCE_MODEL: Optional, default mistral-ai/mistral-small-2503
+
+Frontend:
+ - VITE_API_URL: Base URL for the API (e.g., http://127.0.0.1:8000 in dev, http://localhost:8080 in docker)
+
+Notes:
+ - LLM selection order: OpenAI (if OPENAI_API_KEY) → Azure AI Inference (if GITHUB_TOKEN) → fallback text.
+ - Embeddings use FastEmbed (384 dims) stored in pgvector; ensure the vector extension exists (db_init does this) and re-run ingest if you change models.
 
 ## Common Commands
 - Deactivate Python venv: deactivate
