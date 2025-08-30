@@ -1,0 +1,182 @@
+[
+    {
+        "product_name": "Lentils - Red, Dry",
+        "brand": "Brand C",
+        "category": "Produce",
+        "price": 6.66,
+        "quantity": 433,
+        "product_id": "b1a01f12-d814-4d0c-b2fa-916bc607f404",
+        "product_image": "http://dummyimage.com/208x100.png/cc0000/ffffff"
+    },
+    {
+        "product_name": "Flour - Chickpea",
+        "brand": "Brand A",
+        "category": "Dairy",
+        "price": 23.12,
+        "quantity": 167,
+        "product_id": "4dcc2632-e992-4712-9ceb-51d510d44539",
+        "product_image": "http://dummyimage.com/233x100.png/dddddd/000000"
+    },
+    {
+        "product_name": "Sauce - Cranberry",
+        "brand": "Brand C",
+        "category": "Bakery",
+        "price": 9.2,
+        "quantity": 559,
+        "product_id": "dbffc8a9-2b25-4607-8c22-d1e328c0e573",
+        "product_image": "http://dummyimage.com/151x100.png/ff4444/ffffff"
+    },
+    {
+        "product_name": "Wine - Casablanca Valley",
+        "brand": "Brand A",
+        "category": "Dairy",
+        "price": 41.71,
+        "quantity": 507,
+        "product_id": "49623fe1-9a51-40a7-9542-f8227f1d967c",
+        "product_image": "http://dummyimage.com/212x100.png/ff4444/ffffff"
+    },
+    {
+        "product_name": "Apple - Fuji",
+        "brand": "Brand B",
+        "category": "Produce",
+        "price": 32.78,
+        "quantity": 534,
+        "product_id": "85eb5e13-2c93-480f-b251-02e67b33b30e",
+        "product_image": "http://dummyimage.com/116x100.png/cc0000/ffffff"
+    },
+    {
+        "product_name": "Munchies Honey Sweet Trail Mix",
+        "brand": "Brand A",
+        "category": "Frozen Foods",
+        "price": 8.99,
+        "quantity": 218,
+        "product_id": "f3d40dd1-f7dd-4dca-a2b4-b0f7be610bee",
+        "product_image": "http://dummyimage.com/186x100.png/cc0000/ffffff"
+    },
+    {
+        "product_name": "Bread - Raisin",
+        "brand": "Brand B",
+        "category": "Frozen Foods",
+        "price": 7.54,
+        "quantity": 256,
+        "product_id": "2bb9cab5-2716-4624-9be5-630c7c310dc4",
+        "product_image": "http://dummyimage.com/230x100.png/dddddd/000000"
+    },
+    {
+        "product_name": "Sugar - Crumb",
+        "brand": "Brand A",
+        "category": "Frozen Foods",
+        "price": 25.07,
+        "quantity": 522,
+        "product_id": "596bfacc-7452-48bb-99a1-986475e9211a",
+        "product_image": "http://dummyimage.com/168x100.png/ff4444/ffffff"
+    },
+    {
+        "product_name": "Doilies - 5, Paper",
+        "brand": "Brand B",
+        "category": "Produce",
+        "price": 32.5,
+        "quantity": 895,
+        "product_id": "40ce3984-0fb1-43d4-8ed1-5534678df7d2",
+        "product_image": "http://dummyimage.com/236x100.png/5fa2dd/ffffff"
+    },
+    {
+        "product_name": "Syrup - Monin, Irish Cream",
+        "brand": "Brand A",
+        "category": "Meat",
+        "price": 68.88,
+        "quantity": 779,
+        "product_id": "57a63868-d8a5-4c18-9dca-d4de34710bf7",
+        "product_image": "http://dummyimage.com/209x100.png/ff4444/ffffff"
+    },
+    {
+        "product_name": "Sugar - Cubes",
+        "brand": "Brand C",
+        "category": "Dairy",
+        "price": 9.99,
+        "quantity": 232,
+        "product_id": "24a538b3-8518-46af-b240-649781c73a61",
+        "product_image": "http://dummyimage.com/160x100.png/cc0000/ffffff"
+    },
+    {
+        "product_name": "Pear - Packum",
+        "brand": "Brand C",
+        "category": "Frozen Foods",
+        "price": 26.85,
+        "quantity": 528,
+        "product_id": "a721db55-88b1-47d1-8f27-f77f4ecddf6b",
+        "product_image": "http://dummyimage.com/198x100.png/ff4444/ffffff"
+    },
+    {
+        "product_name": "Currants",
+        "brand": "Brand B",
+        "category": "Frozen Foods",
+        "price": 3.89,
+        "quantity": 845,
+        "product_id": "bdbcf129-1fbe-416e-9f24-1d7c73284fc5",
+        "product_image": "http://dummyimage.com/246x100.png/ff4444/ffffff"
+    },
+    {
+        "product_name": "Food Colouring - Red",
+        "brand": "Brand B",
+        "category": "Meat",
+        "price": 71.03,
+        "quantity": 25,
+        "product_id": "dfbd48d0-c255-48ba-b388-979ca1155cd9",
+        "product_image": "http://dummyimage.com/110x100.png/5fa2dd/ffffff"
+    },
+    {
+        "product_name": "Lamb - Racks, Frenched",
+        "brand": "Brand B",
+        "category": "Dairy",
+        "price": 51.89,
+        "quantity": 960,
+        "product_id": "a1a4b6a7-4a36-47be-b8d9-ab3bbaf50c53",
+        "product_image": "http://dummyimage.com/124x100.png/5fa2dd/ffffff"
+    },
+    {
+        "product_name": "Juice - Apple, 1.36l",
+        "brand": "Brand B",
+        "category": "Bakery",
+        "price": 21.54,
+        "quantity": 788,
+        "product_id": "41016075-a623-4aea-94ef-1904b05fc3c6",
+        "product_image": "http://dummyimage.com/205x100.png/5fa2dd/ffffff"
+    },
+    {
+        "product_name": "Broom And Broom Rack White",
+        "brand": "Brand C",
+        "category": "Frozen Foods",
+        "price": 9.24,
+        "quantity": 18,
+        "product_id": "c9e998c1-6a16-4b19-96e6-a05466918fcf",
+        "product_image": "http://dummyimage.com/138x100.png/cc0000/ffffff"
+    },
+    {
+        "product_name": "Pastry - Baked Cinnamon Stick",
+        "brand": "Brand A",
+        "category": "Meat",
+        "price": 34.01,
+        "quantity": 934,
+        "product_id": "b03d51bd-b713-4298-bbee-d63479adbb5c",
+        "product_image": "http://dummyimage.com/121x100.png/ff4444/ffffff"
+    },
+    {
+        "product_name": "Juice - Lemon",
+        "brand": "Brand C",
+        "category": "Meat",
+        "price": 11.07,
+        "quantity": 46,
+        "product_id": "429be9cf-a843-4a84-be2a-3ef577e38bba",
+        "product_image": "http://dummyimage.com/146x100.png/ff4444/ffffff"
+    },
+    {
+        "product_name": "Beer - Mill St Organic",
+        "brand": "Brand A",
+        "category": "Meat",
+        "price": 70.62,
+        "quantity": 632,
+        "product_id": "e6e343b7-17db-462b-a8d2-1ca506d8d1ca",
+        "product_image": "http://dummyimage.com/149x100.png/cc0000/ffffff"
+    }
+]
