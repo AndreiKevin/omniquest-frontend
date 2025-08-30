@@ -165,7 +165,7 @@ export default function App() {
         <aside className="lg:sticky lg:top-16 h-[calc(100vh-6rem)]">
           <Card className="h-full flex flex-col">
             <CardHeader className="pb-3">
-              <CardTitle className="text-base">Assistant</CardTitle>
+              <CardTitle className="text-base">Overengineered Search™</CardTitle>
             </CardHeader>
             <Separator />
             <CardContent className="flex-1 p-0">
