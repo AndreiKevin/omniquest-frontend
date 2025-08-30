@@ -12,6 +12,8 @@ import { Separator } from '@/components/ui/separator'
 import { SlidersHorizontal, Filter, X, ArrowUpAZ, ArrowDownAZ, ShoppingBasketIcon, CircleDollarSignIcon } from 'lucide-react'
 import { fetchCategories, sendChat } from './lib/api'
 import type { ChatMessage, Product } from './types'
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 
 export default function App() {
   const pageSize = 15
@@ -178,7 +180,11 @@ export default function App() {
                           ? 'inline-block rounded-2xl bg-blue-600 text-white px-3 py-2'
                           : 'inline-block rounded-2xl bg-zinc-100 text-zinc-900 px-3 py-2'
                       }>
-                        {m.text}
+                        {m.role === 'assistant' ? (
+                          <ReactMarkdown remarkPlugins={[remarkGfm]}>{m.text}</ReactMarkdown>
+                        ) : (
+                          m.text
+                        )}
                       </div>
                       {m.products && (
                         <div className="mt-2 grid grid-cols-2 gap-2">

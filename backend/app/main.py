@@ -197,7 +197,7 @@ async def chatbot(body: ChatRequest, db: Session = Depends(get_db)):
     prompt = (
         "You are a shopping assistant. Given the user's query and retrieved products, "
         "explain briefly (<= 150 words) why these products are good recommendations. "
-        "Focus on matching category, price suitability, and brand.\n\n"
+        "Focus on matching category, price suitability, and brand. Respond in markdown. \n\n"
         f"User query: {body.query}\n\n"
         f"Retrieved products (JSON): {products_json}"
     )
