@@ -2,11 +2,17 @@ from __future__ import annotations
 
 from pathlib import Path
 from typing import List, Optional, Literal, Any
+import os
 
-from fastapi import FastAPI, Query
+from fastapi import FastAPI, Query, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import json
+from sqlalchemy.orm import Session
+from sqlalchemy import select, func
+from .deps import get_db
+from .models import ProductORM
+from .chatbot import search_similar_products
 
 
 class Product(BaseModel):
@@ -25,6 +31,16 @@ class ProductsResponse(BaseModel):
     page_size: int
     total: int
     has_next: bool
+
+
+class ChatRequest(BaseModel):
+    query: str
+    top_k: int = 8
+
+
+class ChatResponse(BaseModel):
+    message: str
+    products: List[Product]
 
 
 def _load_products_from_repo() -> list[dict[str, Any]]:
@@ -62,7 +78,10 @@ def healthz() -> dict[str, str]:
 
 
 @app.get("/categories")
-def list_categories() -> list[str]:
+def list_categories(db: Session = Depends(get_db)) -> list[str]:
+    if os.getenv("DATABASE_URL"):
+        rows = db.execute(select(ProductORM.category).distinct().order_by(ProductORM.category.asc())).all()
+        return [row[0] for row in rows]
     seen: set[str] = set()
     for p in ALL_PRODUCTS:
         c = p.get("category")
@@ -77,7 +96,35 @@ def list_products(
     page_size: int = Query(24, ge=1, le=100),
     category: Optional[str] = Query(None),
     sort: Optional[Literal["price_asc", "price_desc"]] = Query(None),
+    db: Session = Depends(get_db),
 ):
+    if os.getenv("DATABASE_URL"):
+        query = select(ProductORM)
+        count_query = select(func.count()).select_from(ProductORM)
+        if category:
+            query = query.where(ProductORM.category == category)
+            count_query = select(func.count()).select_from(ProductORM).where(ProductORM.category == category)
+        if sort == "price_asc":
+            query = query.order_by(ProductORM.price.asc())
+        elif sort == "price_desc":
+            query = query.order_by(ProductORM.price.desc())
+        total = db.execute(count_query).scalar_one()
+        rows = db.execute(query.offset((page - 1) * page_size).limit(page_size)).scalars().all()
+        items = [
+            {
+                "product_name": r.product_name,
+                "brand": r.brand,
+                "category": r.category,
+                "price": r.price,
+                "quantity": r.quantity,
+                "product_id": str(r.id),
+                "product_image": r.product_image,
+            }
+            for r in rows
+        ]
+        has_next = page * page_size < total
+        return ProductsResponse(items=[Product(**p) for p in items], page=page, page_size=page_size, total=total, has_next=has_next)
+
     items = ALL_PRODUCTS
 
     if category:
@@ -101,6 +148,41 @@ def list_products(
         total=total,
         has_next=has_next,
     )
+
+
+@app.post("/chatbot", response_model=ChatResponse)
+def chatbot(body: ChatRequest, db: Session = Depends(get_db)):
+    # Placeholder embedding: use naive bag-of-words hash as float vector for demo
+    # In production, replace with OpenAI or sentence-transformers and store embeddings during ingest
+    def cheap_embed(text: str, dims: int = 1536) -> list[float]:
+        v = [0.0] * dims
+        for i, ch in enumerate(text.encode("utf-8")):
+            v[i % dims] += (ch % 7) / 255.0
+        return v
+
+    emb = cheap_embed(body.query)
+    products = []
+    if os.getenv("DATABASE_URL"):
+        rows = search_similar_products(db, emb, top_k=body.top_k)
+        products = [
+            Product(
+                product_name=r.product_name,
+                brand=r.brand,
+                category=r.category,
+                price=r.price,
+                quantity=r.quantity,
+                product_id=str(r.id),
+                product_image=r.product_image,
+            )
+            for r in rows
+        ]
+    else:
+        # fallback: return first K items
+        for p in ALL_PRODUCTS[: body.top_k]:
+            products.append(Product(**p))
+
+    message = "Here are some products you might like based on your query."
+    return ChatResponse(message=message, products=products)
 
 
 if __name__ == "__main__":
