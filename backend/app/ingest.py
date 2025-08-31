@@ -14,7 +14,8 @@ from fastembed import TextEmbedding
 
 
 def load_repo_data() -> list[dict[str, Any]]:
-    repo_root = Path(__file__).resolve().parents[2]
+    # data.json is located at backend/data.json (one level up from app/)
+    repo_root = Path(__file__).resolve().parents[1]
     data_path = repo_root / "data.json"
     with data_path.open("r", encoding="utf-8") as f:
         return json.load(f)

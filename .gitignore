@@ -6,3 +6,4 @@ backend/app/__pycache__/*
 /backend/omni
 backend/.env.docker
 /backend/__pycache__
+/data
