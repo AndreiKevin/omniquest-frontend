@@ -106,12 +106,14 @@ Get a free Github token from: https://github.com/marketplace/models/azureml-mist
 1) Configure **frontend/.env.docker** 
    - VITE_API_URL=http://localhost:8080
 
-2) Run Docker Compose:
+2) cd ..
+
+3) Run Docker Compose:
    ```bash
    docker compose up --build
    ```
 
-3) Frontend: http://localhost:5173
+4) Frontend: http://localhost:5173
 
 Load Testing:
 - cd backend
