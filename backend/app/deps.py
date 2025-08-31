@@ -21,8 +21,9 @@ engine = create_engine(
     pool_pre_ping=True,
     pool_size=20,
     max_overflow=80,
-    pool_timeout=30,
+    pool_timeout=5,
     pool_recycle=300,
+    pool_use_lifo=True,
 )
 # pool_size=20 → Keep 20 reusable connections open.
 # max_overflow=80 → Allow up to 80 extra temporary connections if needed.
