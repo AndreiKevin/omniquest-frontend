@@ -7,13 +7,13 @@
   - React Query caches server results by params: query key is ['products', { pageSize, categories, sort }]. Switching sort/filters yields distinct cache entries; toggling back reuses cached pages until stale.
   - Product grid is responsive; images are object-contain within a fixed height to handle varying sizes. Cards fade in.
   - Filters: multi-category checklist dropdown; filter badges wrap and are removable on click. Sort is a single toggle: Off → Low→High → High→Low.
-  - Chatbot: right-docked panel, markdown-rendered assistant messages, content-sized bubbles, and a pulsing loading bubble. Recommended products are cards beneath assistant replies.
+  - Chatbot: right-docked panel, markdown-rendered assistant messages, content-sized bubbles, and a pulsing loading bubble. Recommended products are cards beneath assistant replies. User query used to semantically search the database for similar products then passed to the LLM to answer the user's question directly.
 
 - Backend
   - FastAPI endpoints: /products (pagination, multi-category filters, price sort), /categories, /chatbot.
   - Data: file-backed (data.json) or Postgres (auto-switch via DATABASE_URL).
   - RAG: FastEmbed (384 dims) embeddings stored in pgvector; similarity uses cosine operator <=>.
-  - Chat: prompt contains user query, recent messages, and retrieved products JSON. Provider selection: OpenAI (OPENAI_API_KEY) → Azure AI Inference (GITHUB_TOKEN) → fallback.
+  - Chat: prompt contains user query, recent messages, and retrieved products JSON. Chatbot has context to previous messages up to a max of 6 messages (arbitrary limit). Provider selection: OpenAI (OPENAI_API_KEY) → Azure AI Inference (GITHUB_TOKEN) → fallback.
 
 - Database and Indexing
   - Schema: products(id uuid, product_name, brand, category, price, quantity, product_image, embedding vector(384)).
@@ -27,8 +27,8 @@
     - Similarity search embeds the query (FastEmbed) and orders by embedding <=> :vector.
 
 - Infra & Scaling
-  - Gunicorn worker processes for CPU core utilization.
-  - NGINX reverse proxy load-balances two backend replicas (compose) and fronts the API.
+  - Gunicorn worker processes for CPU core utilization (since Python is inherently single-threaded, Gunicorn is used to handle multiple requests concurrently).
+  - NGINX reverse proxy load-balances two backend replicas (compose) and fronts the API. Even distribution of requests across the two backends is achieved using the least_conn load balancing setting.
   - Dev DB compose for a standalone pgvector Postgres.
   - High-concurrency settings:
     - docker-compose ulimits nofile raised to 65536 for services handling many sockets.
