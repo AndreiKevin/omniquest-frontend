@@ -5,7 +5,7 @@
 - Frontend
   - React + TypeScript, Vite, Tailwind v4, shadcn/ui.
   - React Query caches server results by params: query key is ['products', { pageSize, categories, sort }]. Switching sort/filters yields distinct cache entries; toggling back reuses cached pages until stale.
-  - Product grid is responsive; images are object-contain within a fixed height to handle varying sizes. Cards fade in.
+  - Products section uses infinite scroll. Product grid is responsive; images are object-contain within a fixed height to handle varying sizes. Cards fade in on render.
   - Filters: multi-category checklist dropdown; filter badges wrap and are removable on click. Sort is a single toggle: Off → Low→High → High→Low.
   - Chatbot: right-docked panel, markdown-rendered assistant messages, content-sized bubbles, and a pulsing loading bubble. Recommended products are cards beneath assistant replies. User query used to semantically search the database for similar products then passed to the LLM to answer the user's question directly.
 
