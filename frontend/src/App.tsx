@@ -11,7 +11,7 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
 import { SlidersHorizontal, Filter, X, ArrowUpAZ, ArrowDownAZ, ShoppingBasketIcon, CircleDollarSignIcon } from 'lucide-react'
 import { fetchCategories, sendChat } from './lib/api'
-import type { ChatMessage, Product, ChatTurn } from './types'
+import type { ChatMessage, Product } from './types'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 
