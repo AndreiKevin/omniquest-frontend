@@ -32,9 +32,14 @@ while True:
 PY
 fi
 
-echo "Running db_init and ingest..."
-python -m app.db_init
-python -m app.ingest
+RUN_DB_INIT=${RUN_DB_INIT:-"true"}
+if [ "$RUN_DB_INIT" = "true" ]; then
+  echo "Running db_init and ingest..."
+  python -m app.db_init
+  python -m app.ingest
+else
+  echo "Skipping db_init and ingest (RUN_DB_INIT=$RUN_DB_INIT)"
+fi
 
 echo "Launching Gunicorn..."
 exec gunicorn -c gunicorn.conf.py app.main:app

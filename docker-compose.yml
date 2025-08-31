@@ -16,6 +16,8 @@ services:
       dockerfile: backend/Dockerfile
     env_file:
       - backend/.env.docker
+    environment:
+      RUN_DB_INIT: "true"
     depends_on:
       - db
     ulimits:
@@ -29,6 +31,8 @@ services:
       dockerfile: backend/Dockerfile
     env_file:
       - backend/.env.docker
+    environment:
+      RUN_DB_INIT: "false"
     depends_on:
       - db
     ulimits:
