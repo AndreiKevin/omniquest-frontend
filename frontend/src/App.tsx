@@ -11,7 +11,7 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
 import { SlidersHorizontal, Filter, X, ArrowUpAZ, ArrowDownAZ, ShoppingBasketIcon, CircleDollarSignIcon } from 'lucide-react'
 import { fetchCategories, sendChat } from './lib/api'
-import type { ChatMessage, Product } from './types'
+import type { ChatMessage, Product, ChatTurn } from './types'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 
@@ -47,20 +47,25 @@ export default function App() {
     const text = chatInput.trim()
     if (!text) return
     const userMsg: ChatMessage = { id: crypto.randomUUID(), role: 'user', text }
-    setMessages((m) => [...m, userMsg])
+    const loadingMsg: ChatMessage = { id: crypto.randomUUID(), role: 'assistant', text: 'Thinking…', loading: true }
+    setMessages((m) => [...m, userMsg, loadingMsg])
     setChatInput('')
     try {
-      const res = await sendChat({ query: text, top_k: 6 })
+      const lmMessages = [
+        // recent history (limit ~6 turns)
+        ...messages.slice(-6).map((m) => ({ role: m.role, content: m.text })),
+      ] as { role: 'system' | 'user' | 'assistant'; content: string }[]
+      const res = await sendChat({ query: text, top_k: 6, messages: lmMessages })
       const assistant: ChatMessage = {
         id: crypto.randomUUID(),
         role: 'assistant',
         text: res.message,
         products: res.products,
       }
-      setMessages((m) => [...m, assistant])
+      setMessages((m) => m.filter((mm) => !mm.loading).concat(assistant))
     } catch (e) {
       const err: ChatMessage = { id: crypto.randomUUID(), role: 'assistant', text: 'Sorry, something went wrong.' }
-      setMessages((m) => [...m, err])
+      setMessages((m) => m.filter((mm) => !mm.loading).concat(err))
     }
   }
 
@@ -178,7 +183,7 @@ export default function App() {
                       <div className={
                         m.role === 'user'
                           ? 'inline-block rounded-2xl bg-blue-600 text-white px-3 py-2'
-                          : 'inline-block rounded-2xl bg-zinc-100 text-zinc-900 px-3 py-2'
+                          : (m.loading ? 'inline-block rounded-2xl bg-zinc-100 text-zinc-900 px-3 py-2 animate-pulse' : 'inline-block rounded-2xl bg-zinc-100 text-zinc-900 px-3 py-2')
                       }>
                         {m.role === 'assistant' ? (
                           <ReactMarkdown remarkPlugins={[remarkGfm]}>{m.text}</ReactMarkdown>

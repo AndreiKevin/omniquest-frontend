@@ -37,6 +37,7 @@ class ProductsResponse(BaseModel):
 class ChatRequest(BaseModel):
     query: str
     top_k: int = 8
+    messages: Optional[List[dict]] = None
 
 
 class ChatResponse(BaseModel):
@@ -191,14 +192,16 @@ async def chatbot(body: ChatRequest, db: Session = Depends(get_db)):
             products.append(Product(**p))
 
     products_json = json.dumps([p.model_dump() for p in products])
-    system_message = (
+    # Build an OpenAI-style messages array; prepend system guidance and retrieved products
+    system_content = (
         "You are a shopping assistant. Given the user's query and retrieved products, "
         "explain briefly (<= 150 words) why these products are good recommendations. "
-        "Focus on matching category, price suitability, and brand. Respond in markdown. "
-        "Respond directly as if you are speaking to the user directly."
-        f"Retrieved products (JSON): {products_json}"
+        "Focus on matching category, price suitability, and brand. Respond in markdown."
+        f"\n\nRetrieved products (JSON): {products_json}"
     )
-    message = await async_generate_reasoning(body.query, system_message)
+    messages = body.messages or []
+    messages = [{"role": "system", "content": system_content}] + messages + [{"role": "user", "content": body.query}]
+    message = await async_generate_reasoning(messages)
     return ChatResponse(message=message, products=products)
 
 

@@ -19,6 +19,7 @@ export type ProductsResponse = {
 export type ChatRequest = {
   query: string
   top_k?: number
+  messages?: { role: 'system' | 'user' | 'assistant'; content: string }[]
 }
 
 export type ChatResponse = {
@@ -31,6 +32,9 @@ export type ChatMessage = {
   role: 'user' | 'assistant'
   text: string
   products?: Product[]
+  loading?: boolean
 }
+
+// No ChatTurn export needed; we pass LLM-standard messages
 
 
