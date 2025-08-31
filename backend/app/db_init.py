@@ -7,9 +7,16 @@ from .models import Base
 
 
 def init_db() -> None:
-    # Ensure pgvector extension in a committed transaction
+    # Ensure pgvector extension with an advisory lock to avoid race conditions
+    # when multiple app instances initialize concurrently.
     with engine.begin() as conn:
-        conn.execute(text("CREATE EXTENSION IF NOT EXISTS vector"))
+        # Acquire a session-level advisory lock (arbitrary key)
+        conn.execute(text("SELECT pg_advisory_lock(4815162342)"))
+        try:
+            conn.execute(text("CREATE EXTENSION IF NOT EXISTS vector"))
+        finally:
+            # Always release the advisory lock
+            conn.execute(text("SELECT pg_advisory_unlock(4815162342)"))
     # Create tables after extension is available
     Base.metadata.create_all(bind=engine)
     # Create helpful indexes (btree + vector). Some may already exist via SQLAlchemy; IF NOT EXISTS avoids errors.
