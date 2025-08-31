@@ -98,7 +98,7 @@ Get a free Github token from: https://github.com/marketplace/models/azureml-mist
 ### Production Setup
 
 1) Configure **backend/.env.docker** 
-   - DATABASE_URL=postgresql+psycopg://postgres:postgres@db:5432/omniquest:
+   - DATABASE_URL=postgresql+psycopg://postgres:postgres@db:5432/omniquest
    - GITHUB_TOKEN=<YOUR_GITHUB_TOKEN>
 
 Get a free Github token from: https://github.com/marketplace/models/azureml-mistral/mistral-small-2503 -> Use this model -> Configure Authentication -> Create Personal Access Token
