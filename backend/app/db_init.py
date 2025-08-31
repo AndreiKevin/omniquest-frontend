@@ -20,8 +20,6 @@ def init_db() -> None:
         conn.execute(text("CREATE INDEX IF NOT EXISTS idx_products_price_btree ON products (price)"))
         # Single-column category index for distinct/order
         conn.execute(text("CREATE INDEX IF NOT EXISTS idx_products_category_btree ON products (category)"))
-        # Vector IVFFlat index for cosine similarity (requires pgvector). Choose a conservative lists value.
-        conn.execute(text("CREATE INDEX IF NOT EXISTS idx_products_embedding_cos ON products USING ivfflat (embedding vector_cosine_ops) WITH (lists = 100)"))
 
 
 if __name__ == "__main__":
