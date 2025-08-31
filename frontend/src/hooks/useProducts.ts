@@ -12,7 +12,7 @@ export function useProducts(params: {
     // Cache is segmented by sort and categories so toggling reuses prior results when revisited
     queryKey: ['products', { pageSize, categories, sort }],
     queryFn: ({ pageParam = 1 }) =>
-      fetchProducts({ page: pageParam, pageSize, categories, sort }),
+      fetchProducts({ page: pageParam as number, pageSize, categories, sort }),
     initialPageParam: 1,
     getNextPageParam: (lastPage) => (lastPage.has_next ? lastPage.page + 1 : undefined),
     staleTime: 60_000, // 1 min: recent toggles re-use cache
